@@ -1,0 +1,180 @@
+{
+	"type": "npm",
+	"name": "@tamagui/font-nohemi",
+	"version": "2.4.5",
+	"default": "/dist/cjs",
+	"files": [
+		{
+			"type": "directory",
+			"name": "fonts",
+			"files": [
+				{
+					"type": "file",
+					"name": "Nohemi-Black.ttf",
+					"hash": "Hr+opoG6Nq64B2HhnZzxXtD1FxL9SNE5Srz4fPvjzJI=",
+					"size": 56400
+				},
+				{
+					"type": "file",
+					"name": "Nohemi-Bold.ttf",
+					"hash": "G0b0I/ZHcRcomTxwkbpVlE+p2BGruA5Pgwv++wa51Q8=",
+					"size": 56760
+				},
+				{
+					"type": "file",
+					"name": "Nohemi-ExtraBold.ttf",
+					"hash": "o4qlMClKQ6voQ+4wySCQr4WHAiXSs9Fu616Xrb8ZScU=",
+					"size": 56800
+				},
+				{
+					"type": "file",
+					"name": "Nohemi-ExtraLight.ttf",
+					"hash": "EMT4W/ThyGuTbINkxQJz3TRBtOwyxk9DHrWj+iO8WUA=",
+					"size": 56376
+				},
+				{
+					"type": "file",
+					"name": "Nohemi-Light.ttf",
+					"hash": "w9OVDbN3xWF6kHy+7zXOU0a1nmg7Gq3jnVUD1y0bgts=",
+					"size": 56736
+				},
+				{
+					"type": "file",
+					"name": "Nohemi-Medium.ttf",
+					"hash": "eWCYEfmTYk+BzzXX0FhWJ6eHIkua93uBLyKp3buR0Ro=",
+					"size": 56988
+				},
+				{
+					"type": "file",
+					"name": "Nohemi-Regular.ttf",
+					"hash": "ENuj2RsXo0JZtJHUygj5OAl7asXw5zjchj8sgYR0Meo=",
+					"size": 56736
+				},
+				{
+					"type": "file",
+					"name": "Nohemi-SemiBold.ttf",
+					"hash": "bIuy4S9PHIbtN1RwnAAv15UlV1Uw6gAidPRRdVhvG54=",
+					"size": 56740
+				},
+				{
+					"type": "file",
+					"name": "Nohemi-Thin.ttf",
+					"hash": "EK9C8nvvvO2+9nPOubVIUMrKoDj0Qhw5CirCqMvgiMg=",
+					"size": 56448
+				}
+			]
+		},
+		{
+			"type": "directory",
+			"name": "dist",
+			"files": [
+				{
+					"type": "directory",
+					"name": "esm",
+					"files": [
+						{
+							"type": "file",
+							"name": "index.js",
+							"hash": "Qx7HeYRi6bDX4fesxCKuioBUIERWH8jQhV2nghLK2i8=",
+							"size": 979
+						},
+						{
+							"type": "file",
+							"name": "index.js.map",
+							"hash": "DzuI1t35ES47ibwLJT445d4L/mFXdNwQTlVMI4ZpRbc=",
+							"size": 1298
+						},
+						{
+							"type": "file",
+							"name": "index.mjs",
+							"hash": "O6vaFZu5pR3RZTQn4Bv7j7edk7xG6ObrTe5b1lC1brg=",
+							"size": 980
+						},
+						{
+							"type": "file",
+							"name": "index.mjs.map",
+							"hash": "DzuI1t35ES47ibwLJT445d4L/mFXdNwQTlVMI4ZpRbc=",
+							"size": 1298
+						},
+						{
+							"type": "file",
+							"name": "index.native.js",
+							"hash": "e7kpaFMIjG4iHgjSLhxyOe0x1AfK84iDturnvC6KF+k=",
+							"size": 1310
+						},
+						{
+							"type": "file",
+							"name": "index.native.js.map",
+							"hash": "zshipXQcsxVbzl8yMZl7KTL1R1kaF3cZn4W5X+YMBPw=",
+							"size": 1362
+						}
+					]
+				},
+				{
+					"type": "directory",
+					"name": "cjs",
+					"files": [
+						{
+							"type": "file",
+							"name": "index.cjs",
+							"hash": "wNS841/sDZhD2zglYCJua+rnSbmaDUC8l4JZclmV4Ew=",
+							"size": 1868
+						},
+						{
+							"type": "file",
+							"name": "index.native.js",
+							"hash": "sxojP0ik6yBoiFQH+QS7+8rQQnVY7qbkGbACcAOFBv8=",
+							"size": 2249
+						},
+						{
+							"type": "file",
+							"name": "index.native.js.map",
+							"hash": "YsRk29IPfkODBHK4NgNDQJXfeOQwixCGcf2Wjes+PGo=",
+							"size": 1703
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "directory",
+			"name": "types",
+			"files": [
+				{
+					"type": "file",
+					"name": "index.d.ts",
+					"hash": "Ecq16q0aZ7DyZgr/rs1g7EBOZ71JSlpPfw3kTt/NBAk=",
+					"size": 688
+				},
+				{
+					"type": "file",
+					"name": "index.d.ts.map",
+					"hash": "y9nVLwXb1463Am4QDwdVEbKHibzH9lFEqBugHmUnPN0=",
+					"size": 1800
+				}
+			]
+		},
+		{
+			"type": "file",
+			"name": "LICENSE",
+			"hash": "utz0X4JGtOjpd+hG3VqySiYZryzmh13XLjLu+iCdi28=",
+			"size": 1107
+		},
+		{
+			"type": "file",
+			"name": "nohemi.css",
+			"hash": "At4VsGYUZ4yVTqeJW1iEGfQQa+Lt7AzVel2+xZojqtA=",
+			"size": 1946
+		},
+		{
+			"type": "file",
+			"name": "package.json",
+			"hash": "IgesSC1fpJfDYSONUd80HivMDy/7M+adMbk80WQbUo4=",
+			"size": 993
+		}
+	],
+	"links": {
+		"stats": "https://data.jsdelivr.com/v1/stats/packages/npm/@tamagui/font-nohemi@2.4.5",
+		"entrypoints": "https://data.jsdelivr.com/v1/packages/npm/@tamagui/font-nohemi@2.4.5/entrypoints"
+	}
+}
