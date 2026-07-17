@@ -3,17 +3,48 @@ document.addEventListener("DOMContentLoaded", function () {
   var mobileNav = document.getElementById("mobileNav");
 
   if (navToggle && mobileNav) {
+    // Stagger the menu items so they cascade in rather than appearing at once.
+    mobileNav.querySelectorAll("a").forEach(function (link, i) {
+      link.style.setProperty("--stagger", 40 + i * 45 + "ms");
+    });
+
     navToggle.addEventListener("click", function () {
       var isOpen = mobileNav.classList.toggle("open");
       navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      document.body.style.overflow = isOpen ? "hidden" : "";
     });
 
     mobileNav.querySelectorAll("a").forEach(function (link) {
       link.addEventListener("click", function () {
         mobileNav.classList.remove("open");
         navToggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
       });
     });
+
+    // Escape closes the menu
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && mobileNav.classList.contains("open")) {
+        mobileNav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+      }
+    });
+  }
+
+  // Header condenses + goes glass once you leave the top of the page
+  var siteHeader = document.querySelector(".site-header");
+  if (siteHeader) {
+    var lastScrolled = null;
+    var onScrollHeader = function () {
+      var scrolled = window.scrollY > 24;
+      if (scrolled !== lastScrolled) {
+        lastScrolled = scrolled;
+        siteHeader.classList.toggle("is-scrolled", scrolled);
+      }
+    };
+    window.addEventListener("scroll", onScrollHeader, { passive: true });
+    onScrollHeader();
   }
 
   var destRow = document.getElementById("destRow");
@@ -59,11 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     goToTestiPage(0);
-  }
-
-  var yearEl = document.getElementById("year");
-  if (yearEl) {
-    yearEl.textContent = new Date().getFullYear();
   }
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -134,24 +160,62 @@ document.addEventListener("DOMContentLoaded", function () {
     checkGlobeReveal();
   }
 
-  // Reveal cards on scroll
+  // Reveal cards on scroll.
+  // Once an element has finished revealing we strip the reveal classes entirely:
+  // `.reveal.is-visible { transform: none }` would otherwise sit at the end of the
+  // cascade and beat every `:hover { transform: ... }` rule at equal specificity,
+  // silently killing card lifts. Removing the classes also drops `will-change`.
   var revealEls = document.querySelectorAll(
     ".package-card, .destination-card, .step, .why-row, .pkg-includes, .enquiry-card, .enquiry-side, .testimonial-card"
   );
-  if (revealEls.length && !reduceMotion && "IntersectionObserver" in window) {
+  var revealables = [].slice.call(revealEls).concat(
+    [].slice.call(document.querySelectorAll("[data-reveal]"))
+  );
+
+  if (revealables.length && !reduceMotion && "IntersectionObserver" in window) {
+    var settle = function (el) {
+      el.classList.remove("reveal", "is-visible");
+      el.removeAttribute("data-reveal");
+      el.style.transitionDelay = "";
+      el.style.removeProperty("--reveal-delay");
+      el.style.willChange = "";
+    };
+
     revealEls.forEach(function (el, i) {
       el.classList.add("reveal");
       el.style.transitionDelay = (i % 4) * 80 + "ms";
     });
+
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          io.unobserve(entry.target);
-        }
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        el.classList.add("is-visible");
+        io.unobserve(el);
+
+        var done = false;
+        var finish = function () {
+          if (done) return;
+          done = true;
+          el.removeEventListener("transitionend", onEnd);
+          settle(el);
+        };
+        var onEnd = function (e) {
+          if (e.target === el && (e.propertyName === "transform" || e.propertyName === "opacity")) finish();
+        };
+        el.addEventListener("transitionend", onEnd);
+        // Fallback in case transitionend never fires (element hidden, interrupted, etc.)
+        setTimeout(finish, 1400);
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
-    revealEls.forEach(function (el) { io.observe(el); });
+
+    revealables.forEach(function (el) { io.observe(el); });
+  } else {
+    // Reduced motion / no IO support: show everything immediately.
+    revealables.forEach(function (el) {
+      el.classList.remove("reveal");
+      el.removeAttribute("data-reveal");
+    });
   }
 
   // Enquiry / booking form -> compose a prefilled email (static site, no backend)
@@ -195,6 +259,40 @@ document.addEventListener("DOMContentLoaded", function () {
       window.location.href = mailto;
 
       var status = document.getElementById("formStatus");
+      if (status) {
+        status.textContent = "Opening your email app to send this to letsmoveabroad@hotmail.com. If nothing happens, email us directly at letsmoveabroad@hotmail.com.";
+        status.style.display = "block";
+      }
+    });
+  }
+
+  // Home page "Get In Touch" contact form -> same mailto inbox
+  var contactForm = document.getElementById("contactForm");
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var val = function (id) {
+        var el = document.getElementById(id);
+        return el ? el.value.trim() : "";
+      };
+
+      var name = val("c-name");
+      var lines = [
+        "Name: " + name,
+        "Phone: " + val("c-phone"),
+        "Email: " + val("c-email"),
+        "",
+        "Query:",
+        val("c-query")
+      ];
+
+      var mailto =
+        "mailto:letsmoveabroad@hotmail.com" +
+        "?subject=" + encodeURIComponent("Website Enquiry - " + (name || "Website")) +
+        "&body=" + encodeURIComponent(lines.join("\n"));
+      window.location.href = mailto;
+
+      var status = document.getElementById("contactStatus");
       if (status) {
         status.textContent = "Opening your email app to send this to letsmoveabroad@hotmail.com. If nothing happens, email us directly at letsmoveabroad@hotmail.com.";
         status.style.display = "block";
