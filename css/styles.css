@@ -393,8 +393,14 @@ input:focus-visible {
   pointer-events: none;
   transition: opacity var(--dur-fast) var(--ease-standard),
               transform var(--dur-fast) var(--ease-entrance),
-              visibility var(--dur-fast);
+              visibility var(--dur-fast),
+              inset var(--dur-fast) var(--ease-standard);
 }
+/* The header condenses to 66px on scroll (see .site-header.is-scrolled) but
+   this was still hard-coded to the full 84px header height, leaving an
+   18px gap that showed whatever was behind the menu (globe, hero, etc.)
+   between the condensed header and the top of the white panel. */
+.site-header.is-scrolled + .mobile-nav { inset: 66px 0 0 0; }
 .mobile-nav.open {
   opacity: 1;
   visibility: visible;
@@ -1008,43 +1014,38 @@ input:focus-visible {
 .pin-newzealand { left: 50%; top: 82%; }
 
 @media (max-width: 900px) {
+  /* 6 pins is too many for the old free-form layout (tuned for 3) to fit
+     without colliding on a phone-width globe. Laid out as a clean 2-column
+     x 3-row grid instead - nothing sits at the extreme edges any more,
+     so the old edge-clipping anchor hack is gone too, it's just not
+     needed with these positions. */
   .globe-wrap { height: 780px; }
   .globe-heading { top: 64px; }
-  .pin-serbia     { top: 62%; }
-  .pin-moldova    { top: 66%; }
-  .pin-albania    { top: 60%; }
-  .pin-europe     { left: 8%; top: 64%; }
-  .pin-schengen   { left: 92%; top: 64%; }
-  .pin-newzealand { top: 86%; }
+  .pin-serbia     { left: 26%; top: 56%; }
+  .pin-albania    { left: 74%; top: 56%; }
+  .pin-moldova    { left: 26%; top: 70%; }
+  .pin-schengen   { left: 74%; top: 70%; }
+  .pin-europe     { left: 26%; top: 84%; }
+  .pin-newzealand { left: 74%; top: 84%; }
   .pin-card { padding: 5px 14px 5px 5px; gap: 8px; }
   .pin-card img { width: 36px; height: 36px; }
   .pin-card .pin-flag { font-size: 0.92rem; }
   .pin-card .pin-city { font-size: 0.66rem; }
-  /* Same edge-clipping fix as the narrower breakpoint below - Europe/
-     Schengen sit near the globe's clipped edges at this width too. */
-  .pin-europe .pin-card { left: 0; transform: none; }
-  .pin-schengen .pin-card { left: auto; right: 0; transform: none; }
 }
 @media (max-width: 620px) {
   .globe-wrap { height: 720px; }
   .globe-heading { top: 48px; }
   .globe-heading p { font-size: 0.92rem; }
-  .pin-serbia     { left: 24%; top: 64%; }
-  .pin-moldova    { left: 50%; top: 68%; }
-  .pin-albania    { left: 72%; top: 61%; }
-  .pin-europe     { left: 8%; top: 74%; }
-  .pin-schengen   { left: 92%; top: 74%; }
-  .pin-newzealand { left: 50%; top: 88%; }
+  .pin-serbia     { left: 25%; top: 58%; }
+  .pin-albania    { left: 75%; top: 58%; }
+  .pin-moldova    { left: 25%; top: 73%; }
+  .pin-schengen   { left: 75%; top: 73%; }
+  .pin-europe     { left: 25%; top: 88%; }
+  .pin-newzealand { left: 75%; top: 88%; }
   .pin-card { padding: 4px 10px 4px 4px; gap: 6px; }
   .pin-card img { width: 28px; height: 28px; }
   .pin-card .pin-flag { font-size: 0.78rem; }
   .pin-card .pin-city { font-size: 0.6rem; }
-  /* Europe/Schengen sit close to the globe's edges here - centering their
-     label pill on the dot (the default) pushes half of it past the
-     clipped edge of .globe-wrap. Anchor to the dot instead of centering
-     on it, so the pill only ever grows inward. */
-  .pin-europe .pin-card { left: 0; transform: none; }
-  .pin-schengen .pin-card { left: auto; right: 0; transform: none; }
 }
 
 .destinations-row {
