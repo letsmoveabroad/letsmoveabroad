@@ -1020,6 +1020,10 @@ input:focus-visible {
   .pin-card img { width: 36px; height: 36px; }
   .pin-card .pin-flag { font-size: 0.92rem; }
   .pin-card .pin-city { font-size: 0.66rem; }
+  /* Same edge-clipping fix as the narrower breakpoint below - Europe/
+     Schengen sit near the globe's clipped edges at this width too. */
+  .pin-europe .pin-card { left: 0; transform: none; }
+  .pin-schengen .pin-card { left: auto; right: 0; transform: none; }
 }
 @media (max-width: 620px) {
   .globe-wrap { height: 720px; }
@@ -1035,6 +1039,12 @@ input:focus-visible {
   .pin-card img { width: 28px; height: 28px; }
   .pin-card .pin-flag { font-size: 0.78rem; }
   .pin-card .pin-city { font-size: 0.6rem; }
+  /* Europe/Schengen sit close to the globe's edges here - centering their
+     label pill on the dot (the default) pushes half of it past the
+     clipped edge of .globe-wrap. Anchor to the dot instead of centering
+     on it, so the pill only ever grows inward. */
+  .pin-europe .pin-card { left: 0; transform: none; }
+  .pin-schengen .pin-card { left: auto; right: 0; transform: none; }
 }
 
 .destinations-row {
@@ -1622,6 +1632,14 @@ input:focus-visible {
   background: #fff;
 }
 .form-group textarea { resize: vertical; min-height: 110px; }
+
+@media (max-width: 700px) {
+  /* iOS Safari auto-zooms the page when a focused input's font-size is
+     under 16px - bumping just enough to sit at the threshold. */
+  .form-group input,
+  .form-group select,
+  .form-group textarea { font-size: 16px; }
+}
 .enquiry-form .btn { width: 100%; justify-content: center; margin-top: 8px; }
 .form-note { font-size: 0.82rem; color: var(--ink-muted); margin-top: 14px; text-align: center; }
 
@@ -1751,6 +1769,14 @@ input:focus-visible {
 @media (max-width: 900px) {
   .pkg-detail { grid-template-columns: 1fr; }
   .pkg-includes { position: static; padding: 28px; }
+}
+
+@media (max-width: 640px) {
+  /* Sub-page photo/gradient hero banners eat a large share of a phone
+     screen at their desktop min-height before any real content shows. */
+  .page-hero { min-height: 300px; }
+  .page-hero--package { min-height: 260px; }
+  .page-hero .container { padding-top: 56px; padding-bottom: 32px; }
 }
 
 /* ---------- Page transitions ---------- */
