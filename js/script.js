@@ -35,15 +35,28 @@ document.addEventListener("DOMContentLoaded", function () {
   // Header condenses + goes glass once you leave the top of the page
   var siteHeader = document.querySelector(".site-header");
   if (siteHeader) {
+    // Hysteresis: separate enter/exit thresholds so hovering near one value
+    // (very common with inertial trackpad scrolling) can't flip the class
+    // back and forth every frame and cause a flicker.
     var lastScrolled = null;
+    var scrollTicking = false;
     var onScrollHeader = function () {
-      var scrolled = window.scrollY > 24;
+      var y = window.scrollY;
+      var scrolled = lastScrolled
+        ? y > 16   // already condensed: only expand back once well clear of top
+        : y > 40;  // still expanded: only condense once clearly scrolled
       if (scrolled !== lastScrolled) {
         lastScrolled = scrolled;
         siteHeader.classList.toggle("is-scrolled", scrolled);
       }
+      scrollTicking = false;
     };
-    window.addEventListener("scroll", onScrollHeader, { passive: true });
+    window.addEventListener("scroll", function () {
+      if (!scrollTicking) {
+        scrollTicking = true;
+        window.requestAnimationFrame(onScrollHeader);
+      }
+    }, { passive: true });
     onScrollHeader();
   }
 

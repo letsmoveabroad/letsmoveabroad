@@ -336,6 +336,20 @@ input:focus-visible {
 .nav-dropdown-sub { font-size: 0.8rem; color: var(--ink-muted); font-weight: 500; }
 
 .header-actions { display: flex; align-items: center; gap: 18px; }
+.header-actions .btn {
+  transition: transform var(--dur-micro) var(--ease-standard),
+              box-shadow var(--dur-micro) var(--ease-standard),
+              background var(--dur-micro) var(--ease-standard),
+              color var(--dur-micro) var(--ease-standard),
+              border-color var(--dur-micro) var(--ease-standard),
+              filter var(--dur-micro) var(--ease-standard),
+              padding var(--dur-fast) var(--ease-standard),
+              font-size var(--dur-fast) var(--ease-standard);
+}
+.site-header.is-scrolled .header-actions .btn {
+  padding: 11px 22px;
+  font-size: 0.86rem;
+}
 .header-phone {
   display: flex;
   align-items: center;
