@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 108" role="img" aria-label="Lets Move Abroad">
   <style>
-    .lma-move { fill: currentColor; }
-    .lma-sub  { fill: currentColor; }
+    .lma-move { fill: #fff; }
+    .lma-sub  { fill: #fff; }
     .lma-lets { fill: #F4791E; }
     .lma-plane{ fill: #F4791E; }
   </style>
