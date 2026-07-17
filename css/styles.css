@@ -231,6 +231,13 @@ input:focus-visible {
   transition: background var(--dur-fast) var(--ease-standard),
               box-shadow var(--dur-fast) var(--ease-standard),
               border-color var(--dur-fast) var(--ease-standard);
+  /* Force its own compositor layer: sticky elements that also repaint
+     (background/shadow transitions) can shimmer/flicker on scroll in
+     Chromium on Windows without this. backdrop-filter was dropped below
+     for the same reason - blur behind a sticky element is a known
+     flicker source, independent of any JS toggle logic. */
+  transform: translateZ(0);
+  will-change: background;
 }
 .site-header .container {
   display: flex;
@@ -240,11 +247,9 @@ input:focus-visible {
   gap: 24px;
   transition: height var(--dur-fast) var(--ease-standard);
 }
-/* Scrolled state — condense + glass + depth */
+/* Scrolled state — condense + depth (no backdrop-filter, see note above) */
 .site-header.is-scrolled {
-  background: rgba(11, 13, 98, 0.82);
-  -webkit-backdrop-filter: saturate(150%) blur(14px);
-  backdrop-filter: saturate(150%) blur(14px);
+  background: #0b0d62;
   border-bottom-color: rgba(255, 255, 255, 0.12);
   box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.6);
 }
