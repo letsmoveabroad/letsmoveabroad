@@ -8,26 +8,48 @@ document.addEventListener("DOMContentLoaded", function () {
       link.style.setProperty("--stagger", 40 + i * 45 + "ms");
     });
 
+    // `overflow: hidden` on body does NOT reliably stop background touch
+    // scroll on iOS Safari - the page keeps scrolling underneath a fixed
+    // overlay anyway. Pinning body in place with position:fixed (and
+    // restoring the exact scroll position on close) is the technique that
+    // actually holds on mobile.
+    var lockedScrollY = 0;
+    var lockScroll = function () {
+      lockedScrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = -lockedScrollY + "px";
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+    };
+    var unlockScroll = function () {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      window.scrollTo(0, lockedScrollY);
+    };
+    var closeMobileNav = function () {
+      mobileNav.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      unlockScroll();
+    };
+
     navToggle.addEventListener("click", function () {
       var isOpen = mobileNav.classList.toggle("open");
       navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      document.body.style.overflow = isOpen ? "hidden" : "";
+      if (isOpen) { lockScroll(); } else { unlockScroll(); }
     });
 
     mobileNav.querySelectorAll("a").forEach(function (link) {
-      link.addEventListener("click", function () {
-        mobileNav.classList.remove("open");
-        navToggle.setAttribute("aria-expanded", "false");
-        document.body.style.overflow = "";
-      });
+      link.addEventListener("click", closeMobileNav);
     });
 
     // Escape closes the menu
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && mobileNav.classList.contains("open")) {
-        mobileNav.classList.remove("open");
-        navToggle.setAttribute("aria-expanded", "false");
-        document.body.style.overflow = "";
+        closeMobileNav();
       }
     });
   }
