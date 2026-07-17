@@ -418,13 +418,23 @@ input:focus-visible {
   transform: translateY(10px);
   transition: color var(--dur-micro) var(--ease-standard);
 }
-.mobile-nav a:hover { color: var(--orange-dark); }
+.mobile-nav a:not(.btn):hover { color: var(--orange-dark); }
 .mobile-nav.open a {
   animation: mobileNavItem var(--dur-entrance) var(--ease-entrance) forwards;
   animation-delay: var(--stagger, 0ms);
 }
 @keyframes mobileNavItem {
   to { opacity: 1; transform: none; }
+}
+/* .mobile-nav a above (display:block, 14px 0 padding, border-bottom, color)
+   was leaking onto the "Get In Touch" link too - it has higher specificity
+   than .btn/.btn-navy, so it silently stripped the button's flex layout
+   and horizontal padding down to zero and drew a divider line through it.
+   Restore the actual button look explicitly. */
+.mobile-nav a.btn {
+  display: inline-flex;
+  padding: 15px 28px;
+  border-bottom: none;
 }
 .mobile-nav .btn { margin-top: 24px; width: 100%; justify-content: center; }
 
@@ -437,6 +447,15 @@ input:focus-visible {
   .nav-links { display: none; }
   .header-phone span { display: none; }
   .nav-toggle { display: inline-flex; }
+}
+@media (max-width: 480px) {
+  /* Full desktop-size CTA + a 26px close icon crowd a narrow phone header
+     next to the logo. Scale both down a notch - independent of the
+     scroll-condensed state, which has its own (larger) shrink already. */
+  .header-actions { gap: 10px; }
+  .header-actions .btn { padding: 10px 16px; font-size: 0.82rem; }
+  .nav-toggle { padding: 6px; }
+  .nav-toggle svg { width: 22px; height: 22px; }
 }
 
 /* ---------- Hero ---------- */
