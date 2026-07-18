@@ -146,6 +146,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Browsers can restore a page from the back-forward cache exactly as it
+  // was when the user left - including the "page-leaving" class we just
+  // added above (opacity:0). Without this, hitting Back/Forward brings
+  // back a page that's frozen invisible instead of re-running the fade-in.
+  window.addEventListener("pageshow", function (e) {
+    if (e.persisted) {
+      document.body.classList.remove("page-leaving");
+    }
+  });
+
   // Plane crosses the How It Works points as the section scrolls through view
   var howSteps = document.getElementById("howItWorksSteps");
   var howPlane = document.getElementById("howPlane");
