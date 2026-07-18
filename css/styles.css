@@ -143,6 +143,10 @@ input:focus-visible {
 
 .section {
   padding: 96px 0;
+  /* So jumping to a #section (nav link or direct URL) doesn't tuck its
+     heading under the sticky header - browsers stop scroll-margin-top
+     short by this much. Matches the header's tallest (unscrolled) height. */
+  scroll-margin-top: 84px;
 }
 .section-head {
   max-width: 620px;
@@ -690,6 +694,12 @@ input:focus-visible {
   white-space: nowrap;
   animation: scroll-left 26s linear infinite;
   width: max-content;
+  /* iOS Safari can fail to keep animating a masked ancestor's child -
+     it renders a static snapshot instead of updating each frame. Forcing
+     this onto its own GPU layer fixes it. */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
 }
 .trust-strip:hover .trust-track { animation-play-state: paused; }
 @keyframes scroll-left {
@@ -724,6 +734,9 @@ input:focus-visible {
   height: 100%;
   white-space: nowrap;
   width: max-content;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
   animation: scroll-right 26s linear infinite;
 }
 .flag-strip:hover .flag-track { animation-play-state: paused; }
@@ -1548,7 +1561,8 @@ input:focus-visible {
 }
 
 @media (max-width: 860px) {
-  .footer-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 34px; }
+  .footer-about p { max-width: 100%; }
 }
 
 /* ---------- Enquiry page ---------- */
