@@ -263,7 +263,46 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Enquiry / booking form -> compose a prefilled email (static site, no backend)
+  // Submits an enquiry payload to the server, which emails the team
+  // directly - the visitor just sees "Submitted", no email app involved.
+  var submitEnquiry = function (form, payload, statusEl) {
+    var btn = form.querySelector("button[type=submit]");
+    if (btn) btn.disabled = true;
+    if (statusEl) {
+      statusEl.style.display = "block";
+      statusEl.style.color = "";
+      statusEl.textContent = "Sending your enquiry...";
+    }
+
+    fetch("/api/enquiry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          return { ok: res.ok && data.ok, error: data.error };
+        });
+      })
+      .then(function (result) {
+        if (!result.ok) throw new Error(result.error || "Something went wrong.");
+        if (statusEl) {
+          statusEl.textContent = "Thanks — your enquiry has been submitted. We'll be in touch soon.";
+        }
+        form.reset();
+      })
+      .catch(function () {
+        if (statusEl) {
+          statusEl.style.color = "var(--orange-dark)";
+          statusEl.textContent = "Sorry, we couldn't send that. Please email us directly at letsmoveabroad@hotmail.com.";
+        }
+      })
+      .finally(function () {
+        if (btn) btn.disabled = false;
+      });
+  };
+
+  // Enquiry / booking form
   var enquiryForm = document.getElementById("enquiryForm");
   if (enquiryForm) {
     enquiryForm.addEventListener("submit", function (e) {
@@ -278,40 +317,27 @@ document.addEventListener("DOMContentLoaded", function () {
       var fixedPackage = enquiryForm.getAttribute("data-package") || "";
       var destination = fixedCountry || val("f-destination");
       var pkg = fixedPackage || val("f-package");
-      var name = val("f-name") || "Website";
-
-      var lines = [
-        "Name: " + val("f-name"),
-        "Email: " + val("f-email"),
-        "Phone: " + val("f-phone"),
-        "Destination: " + destination,
-        "Package: " + pkg,
-        "Travel dates: " + val("f-dates"),
-        "Travellers: " + val("f-travellers"),
-        "",
-        "Message:",
-        val("f-message")
-      ];
+      var name = val("f-name") || "Website visitor";
 
       var subject = fixedPackage
         ? "Booking: " + fixedPackage + (destination ? " (" + destination + ")" : "") + " - " + name
         : destination + " E-Visa Enquiry - " + name;
 
-      var mailto =
-        "mailto:letsmoveabroad@hotmail.com" +
-        "?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(lines.join("\n"));
-      window.location.href = mailto;
-
-      var status = document.getElementById("formStatus");
-      if (status) {
-        status.textContent = "Opening your email app to send this to letsmoveabroad@hotmail.com. If nothing happens, email us directly at letsmoveabroad@hotmail.com.";
-        status.style.display = "block";
-      }
+      submitEnquiry(enquiryForm, {
+        subject: subject,
+        name: val("f-name"),
+        email: val("f-email"),
+        phone: val("f-phone"),
+        destination: destination,
+        package: pkg,
+        dates: val("f-dates"),
+        travellers: val("f-travellers"),
+        message: val("f-message")
+      }, document.getElementById("formStatus"));
     });
   }
 
-  // Home page "Get In Touch" contact form -> same mailto inbox
+  // Home page "Get In Touch" contact form
   var contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", function (e) {
@@ -322,26 +348,13 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       var name = val("c-name");
-      var lines = [
-        "Name: " + name,
-        "Phone: " + val("c-phone"),
-        "Email: " + val("c-email"),
-        "",
-        "Query:",
-        val("c-query")
-      ];
-
-      var mailto =
-        "mailto:letsmoveabroad@hotmail.com" +
-        "?subject=" + encodeURIComponent("Website Enquiry - " + (name || "Website")) +
-        "&body=" + encodeURIComponent(lines.join("\n"));
-      window.location.href = mailto;
-
-      var status = document.getElementById("contactStatus");
-      if (status) {
-        status.textContent = "Opening your email app to send this to letsmoveabroad@hotmail.com. If nothing happens, email us directly at letsmoveabroad@hotmail.com.";
-        status.style.display = "block";
-      }
+      submitEnquiry(contactForm, {
+        subject: "Website Enquiry - " + (name || "Website visitor"),
+        name: name,
+        phone: val("c-phone"),
+        email: val("c-email"),
+        message: val("c-query")
+      }, document.getElementById("contactStatus"));
     });
   }
 });
