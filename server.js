@@ -1,6 +1,5 @@
 const express = require("express");
 const path = require("path");
-const nodemailer = require("nodemailer");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,25 +16,35 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// --- Enquiry form submission -> sends the email server-side --------------
-// Requires SMTP credentials as environment variables on the host (set these
-// in the GoDaddy Node.js hosting control panel - never commit them):
-//   SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
-// Optional: SMTP_SECURE ("true" for port 465), SMTP_FROM, CONTACT_TO
-let transporter = null;
-function getTransporter() {
-  if (transporter) return transporter;
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) return null;
-  transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT) || 587,
-    secure: process.env.SMTP_SECURE === "true",
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-  });
-  return transporter;
-}
-
+// --- Enquiry form submission -> sends the email via Resend's HTTP API ----
+// GoDaddy shared hosting blocks outbound SMTP, so email is sent over HTTPS
+// instead. Requires these environment variables on the host (set them in
+// the GoDaddy Node.js hosting control panel - never commit them):
+//   RESEND_API_KEY
+// Optional: RESEND_FROM (must be a verified sender/domain in Resend), CONTACT_TO
 const CONTACT_TO = process.env.CONTACT_TO || "letsmoveabroad@hotmail.com";
+const RESEND_FROM = process.env.RESEND_FROM || "onboarding@resend.dev";
+
+async function sendViaResend({ subject, text, replyTo }) {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + process.env.RESEND_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: RESEND_FROM,
+      to: [CONTACT_TO],
+      reply_to: replyTo || undefined,
+      subject: subject,
+      text: text,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error("Resend API error " + res.status + ": " + body);
+  }
+}
 
 app.post("/api/enquiry", async (req, res) => {
   var clean = function (v) {
@@ -65,19 +74,16 @@ app.post("/api/enquiry", async (req, res) => {
   if (travellers) lines.push("Travellers: " + travellers);
   if (message) lines.push("", "Message:", message);
 
-  var mailer = getTransporter();
-  if (!mailer) {
-    console.error("Enquiry not emailed: SMTP_HOST/SMTP_USER/SMTP_PASS are not set.");
+  if (!process.env.RESEND_API_KEY) {
+    console.error("Enquiry not emailed: RESEND_API_KEY is not set.");
     return res.status(500).json({ ok: false, error: "Email is not configured on the server yet." });
   }
 
   try {
-    await mailer.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
-      to: CONTACT_TO,
-      replyTo: email || undefined,
+    await sendViaResend({
       subject: subject,
       text: lines.join("\n"),
+      replyTo: email || undefined,
     });
     res.json({ ok: true });
   } catch (err) {
