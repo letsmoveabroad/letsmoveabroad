@@ -5,7 +5,8 @@
   "description": "Lets Move Abroad - e-visa, flights & hotel booking site for Serbia, Albania & Moldova",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo \"No build step required - static site served by Express\""
   },
   "engines": {
     "node": ">=18"
