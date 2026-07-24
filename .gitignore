@@ -3,3 +3,9 @@
 Thumbs.db
 node_modules/
 .env
+
+# The GoDaddy build generates its own package-lock.json (untracked) during
+# npm install. Tracking one here makes `git merge origin/main` fail on the
+# build machine ("untracked working tree files would be overwritten"), so we
+# leave it untracked and let the host generate it.
+package-lock.json
