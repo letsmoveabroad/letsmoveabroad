@@ -129,12 +129,11 @@
 
   var DEFAULT_ISO = "GB";
 
-  // Real flag images (Windows browsers don't render flag emoji, so we can't
-  // rely on regional-indicator characters). flagcdn serves tiny PNGs by ISO2.
-  function flagSrc(iso) { return "https://flagcdn.com/32x24/" + iso.toLowerCase() + ".png"; }
-  function flagSrcset(iso) { return "https://flagcdn.com/64x48/" + iso.toLowerCase() + ".png 2x"; }
+  // Self-hosted flat flag SVGs (Windows browsers don't render flag emoji, so
+  // we can't rely on regional-indicator characters). Files live in /flags.
+  function flagSrc(iso) { return "flags/" + iso.toLowerCase() + ".svg"; }
   function flagTag(iso, name) {
-    return '<img class="phone-flag" src="' + flagSrc(iso) + '" srcset="' + flagSrcset(iso) +
+    return '<img class="phone-flag" src="' + flagSrc(iso) +
       '" width="22" height="16" loading="lazy" alt="' + (name || "") + '" />';
   }
 
@@ -186,7 +185,6 @@
     function select(country) {
       var iso = country[1], dial = country[2];
       flagEl.src = flagSrc(iso);
-      flagEl.srcset = flagSrcset(iso);
       flagEl.alt = country[0];
       dialEl.textContent = "+" + dial;
       input.dataset.dial = "+" + dial;
