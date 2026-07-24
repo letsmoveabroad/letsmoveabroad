@@ -1673,6 +1673,82 @@ input:focus-visible {
 }
 .form-group textarea { resize: vertical; min-height: 110px; }
 
+/* ---------- Phone field with country-code picker ---------- */
+.phone-field { position: relative; display: flex; align-items: stretch; }
+.phone-field input[type="tel"] {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0;
+  min-width: 0; /* let the input shrink inside the flex row */
+}
+.phone-country {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  padding: 0 12px;
+  border: 1.5px solid var(--line);
+  border-right: 0;
+  border-top-left-radius: var(--radius-sm);
+  border-bottom-left-radius: var(--radius-sm);
+  background: var(--cream);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.phone-country:hover { background: #fff; }
+.phone-field:focus-within .phone-country,
+.phone-field.is-open .phone-country { border-color: var(--orange); }
+.phone-flag { font-size: 1.15rem; line-height: 1; }
+.phone-dial { font-weight: 600; color: var(--navy); }
+.phone-caret { color: var(--ink-muted); flex: 0 0 auto; transition: transform 0.2s ease; }
+.phone-field.is-open .phone-caret { transform: rotate(180deg); }
+
+.phone-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: none;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 32px rgba(16,18,107,0.14);
+  overflow: hidden;
+}
+.phone-field.is-open .phone-dropdown { display: block; }
+.phone-search {
+  width: 100%;
+  padding: 11px 14px;
+  border: 0 !important;
+  border-bottom: 1.5px solid var(--line) !important;
+  border-radius: 0 !important;
+  background: var(--cream) !important;
+  font-size: 0.9rem;
+}
+.phone-search:focus { outline: none; box-shadow: none !important; }
+.phone-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.phone-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.phone-option:hover { background: var(--cream); }
+.phone-option .phone-name { flex: 1 1 auto; color: var(--ink); }
+.phone-option .phone-code { color: var(--ink-muted); font-weight: 600; }
+
 @media (max-width: 700px) {
   /* iOS Safari auto-zooms the page when a focused input's font-size is
      under 16px - bumping just enough to sit at the threshold. */

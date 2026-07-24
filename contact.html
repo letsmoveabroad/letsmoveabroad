@@ -104,13 +104,13 @@
                 <input type="text" id="c-name" name="name" autocomplete="name" />
               </div>
               <div class="form-group">
-                <label for="c-phone">Phone number</label>
-                <input type="tel" id="c-phone" name="phone" autocomplete="tel" />
+                <label for="c-phone">Phone number <span class="req">*</span></label>
+                <input type="tel" id="c-phone" name="phone" required autocomplete="tel" />
               </div>
             </div>
             <div class="form-group">
-              <label for="c-email">Email <span class="req">*</span></label>
-              <input type="email" id="c-email" name="email" required autocomplete="email" />
+              <label for="c-email">Email</label>
+              <input type="email" id="c-email" name="email" autocomplete="email" />
             </div>
             <div class="form-group">
               <label for="c-query">Your query <span class="req">*</span></label>
@@ -215,6 +215,7 @@
   </div>
 </footer>
 
+<script src="js/country-select.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>

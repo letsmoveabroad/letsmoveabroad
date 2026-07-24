@@ -311,6 +311,14 @@ document.addEventListener("DOMContentLoaded", function () {
         var el = document.getElementById(id);
         return el ? el.value.trim() : "";
       };
+      // Phone reads combine the picked country dial code with the typed number.
+      var phoneVal = function (id) {
+        var el = document.getElementById(id);
+        if (!el) return "";
+        var num = el.value.trim();
+        var dial = el.dataset ? el.dataset.dial : "";
+        return num && dial ? dial + " " + num : num;
+      };
 
       // Country pages carry data-country; package pages carry data-package.
       var fixedCountry = enquiryForm.getAttribute("data-country") || "";
@@ -327,7 +335,7 @@ document.addEventListener("DOMContentLoaded", function () {
         subject: subject,
         name: val("f-name"),
         email: val("f-email"),
-        phone: val("f-phone"),
+        phone: phoneVal("f-phone"),
         destination: destination,
         package: pkg,
         dates: val("f-dates"),
@@ -348,10 +356,17 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       var name = val("c-name");
+      var phoneVal = function (id) {
+        var el = document.getElementById(id);
+        if (!el) return "";
+        var num = el.value.trim();
+        var dial = el.dataset ? el.dataset.dial : "";
+        return num && dial ? dial + " " + num : num;
+      };
       submitEnquiry(contactForm, {
         subject: "Website Enquiry - " + (name || "Website visitor"),
         name: name,
-        phone: val("c-phone"),
+        phone: phoneVal("c-phone"),
         email: val("c-email"),
         message: val("c-query")
       }, document.getElementById("contactStatus"));
