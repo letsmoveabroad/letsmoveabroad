@@ -1679,14 +1679,16 @@ input:focus-visible {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-left: 0;
-  min-width: 0; /* let the input shrink inside the flex row */
+  flex: 1 1 auto; /* take all remaining width */
+  min-width: 0;   /* let the input shrink inside the flex row */
+  width: auto;
 }
 .phone-country {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   flex: 0 0 auto;
-  padding: 0 12px;
+  padding: 0 10px;
   border: 1.5px solid var(--line);
   border-right: 0;
   border-top-left-radius: var(--radius-sm);
@@ -1701,7 +1703,15 @@ input:focus-visible {
 .phone-country:hover { background: #fff; }
 .phone-field:focus-within .phone-country,
 .phone-field.is-open .phone-country { border-color: var(--orange); }
-.phone-flag { font-size: 1.15rem; line-height: 1; }
+.phone-flag {
+  width: 22px;
+  height: 16px;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(16,18,107,0.10);
+  display: block;
+}
 .phone-dial { font-weight: 600; color: var(--navy); }
 .phone-caret { color: var(--ink-muted); flex: 0 0 auto; transition: transform 0.2s ease; }
 .phone-field.is-open .phone-caret { transform: rotate(180deg); }

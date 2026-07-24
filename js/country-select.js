@@ -129,10 +129,13 @@
 
   var DEFAULT_ISO = "GB";
 
-  function flagEmoji(iso) {
-    return iso.replace(/./g, function (c) {
-      return String.fromCodePoint(127397 + c.charCodeAt(0));
-    });
+  // Real flag images (Windows browsers don't render flag emoji, so we can't
+  // rely on regional-indicator characters). flagcdn serves tiny PNGs by ISO2.
+  function flagSrc(iso) { return "https://flagcdn.com/32x24/" + iso.toLowerCase() + ".png"; }
+  function flagSrcset(iso) { return "https://flagcdn.com/64x48/" + iso.toLowerCase() + ".png 2x"; }
+  function flagTag(iso, name) {
+    return '<img class="phone-flag" src="' + flagSrc(iso) + '" srcset="' + flagSrcset(iso) +
+      '" width="22" height="16" loading="lazy" alt="' + (name || "") + '" />';
   }
 
   var openField = null; // currently open picker, so we can close it on outside click
@@ -151,7 +154,7 @@
     btn.setAttribute("aria-expanded", "false");
     btn.setAttribute("aria-label", "Select country calling code");
     btn.innerHTML =
-      '<span class="phone-flag"></span><span class="phone-dial"></span>' +
+      flagTag("GB", "") + '<span class="phone-dial"></span>' +
       '<svg class="phone-caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
 
     var dropdown = document.createElement("div");
@@ -182,7 +185,9 @@
 
     function select(country) {
       var iso = country[1], dial = country[2];
-      flagEl.textContent = flagEmoji(iso);
+      flagEl.src = flagSrc(iso);
+      flagEl.srcset = flagSrcset(iso);
+      flagEl.alt = country[0];
       dialEl.textContent = "+" + dial;
       input.dataset.dial = "+" + dial;
       input.dataset.iso = iso;
@@ -196,7 +201,7 @@
       li.setAttribute("role", "option");
       li.dataset.search = (name + " " + iso + " " + dial).toLowerCase();
       li.innerHTML =
-        '<span class="phone-flag">' + flagEmoji(iso) + "</span>" +
+        flagTag(iso, name) +
         '<span class="phone-name">' + name + "</span>" +
         '<span class="phone-code">+' + dial + "</span>";
       li.addEventListener("click", function () {
